@@ -49,12 +49,12 @@ Assuming you've set up as above.
 
 1. Commit your code in preparation for release.
 1. Update the `.version` file with a new version number.
-1. Run `gorelease`, or use a `//go:generate go run gorelease` in your code and `go generate`
+1. Run `gorelease`, or use a `//go:generate gorelease` in your code and `go generate` to run it.
 
 This will:
  
 1. generate a new `version/version.go`
-1. Create a tag with the version
+1. Create a tag with the version, prepended by a `v`
 1. push the tag 
 1. push the repository
 
