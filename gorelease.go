@@ -80,7 +80,7 @@ func main() {
 	checkIfError(err)
 
 	if !ok {
-		panic(fmt.Errorf("unable to set tag %s\n", tag))
+		panic(fmt.Errorf("unable to set tag %s", tag))
 	}
 
 	/*
