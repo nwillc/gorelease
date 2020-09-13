@@ -58,4 +58,4 @@ This will:
 1. push the tag 
 1. push the repository
 
-If the push fails do to some credential issues it will inform you how to do it manually. 
+If the push fails due to credential issues it will inform you how to do the push manually. 
