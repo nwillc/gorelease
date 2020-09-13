@@ -113,13 +113,21 @@ func main() {
 		panic(fmt.Errorf("unable to set tag %s", tag))
 	}
 
+	sshKey, _ := publicKeys()
+
 	/*
 	 * Git push the tag
 	 */
-	err = repo.Push(newPushOptions([]config.RefSpec{"refs/tags/*:refs/tags/*"}, nil))
-	if err != nil {
-		sshKey, _ := publicKeys()
-		err = repo.Push(newPushOptions([]config.RefSpec{"refs/tags/*:refs/tags/*"}, sshKey))
+	err = repo.Push(&git.PushOptions{
+		RemoteName: "origin",
+		RefSpecs:   []config.RefSpec{"refs/tags/*:refs/tags/*"},
+	})
+	if err != nil && sshKey != nil {
+		err = repo.Push(&git.PushOptions{
+			RemoteName: "origin",
+			RefSpecs:   []config.RefSpec{"refs/tags/*:refs/tags/*"},
+			Auth:       sshKey,
+		})
 		if err != nil {
 			log.Printf("Push failed, please: git push origin %s; git push", tag)
 		}
@@ -128,18 +136,9 @@ func main() {
 	/*
 	 * Push the entire repo
 	 */
-	err = repo.Push(newPushOptions(nil, nil))
+	err = repo.Push(&git.PushOptions{})
 	if err != nil {
-		sshKey, _ := publicKeys()
-		repo.Push(newPushOptions(nil, sshKey))
-	}
-}
-
-func newPushOptions(refSpecs []config.RefSpec, keys *ssh.PublicKeys) *git.PushOptions {
-	return &git.PushOptions{
-		RemoteName: "origin",
-		RefSpecs:   refSpecs,
-		Auth:       keys,
+		repo.Push(&git.PushOptions{Auth: sshKey})
 	}
 }
 
