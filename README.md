@@ -31,7 +31,7 @@ The `.version` file should contain the semantic version you want to use, for exa
 
 This file is optional, if present the text in this file will be used as a comment for the `version.go` files generated.
 
-## Your Version Go File
+## Your version.go File
 
 This can be empty to start, `gorelease` will create a valid Go file basically containing:
 
@@ -41,7 +41,7 @@ package version
 const Version = "v0.1.0"
 ```
 
-This can be referenced in your Go as `version.Version`.
+This can be referenced in your Go as `version.Version`. The output target for this can be changed on the command line.
 
 # Use
 
@@ -68,6 +68,8 @@ Usage of ./gorelease:
     	Allow dirty repository with uncommitted files.
   -dryrun
     	Perform a dry run, no files changed or tags/files pushed.
+  -output string
+    	Where to put the output version.go file (default "version/version.go")
   -version
     	Display version.
 ```
