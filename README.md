@@ -29,7 +29,7 @@ The `.version` file should contain the semantic version you want to use, for exa
 
 ## Your Code License
 
-The test in this file will be used as a comment for the `version.go` files generated.
+This file is optional, if present the text in this file will be used as a comment for the `version.go` files generated.
 
 ## Your Version Go File
 
@@ -59,3 +59,15 @@ This will:
 1. push the repository
 
 If the push fails due to credential issues it will inform you how to do the push manually. 
+
+# Options
+
+```text
+Usage of ./gorelease:
+  -dirty
+    	Allow dirty repository with uncommitted files.
+  -dryrun
+    	Perform a dry run, no files changed or tags/files pushed.
+  -version
+    	Display version.
+```

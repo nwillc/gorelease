@@ -25,23 +25,25 @@ const (
 	gitUser        = "git"
 )
 
-var dryRun *bool
-var dirty *bool
-var vers *bool
+var flags struct{
+	dryRun *bool
+	dirty *bool
+	version *bool
+}
 
 func init() {
-	dryRun = flag.Bool("dryrun", false, "perform a dry run")
-	dirty = flag.Bool("dirty", false, "allow dirty repo")
-	vers = flag.Bool("version", false, "display version")
+	flags.dryRun = flag.Bool("dryrun", false, "Perform a dry run, no files changed or tags/files pushed.")
+	flags.dirty = flag.Bool("dirty", false, "Allow dirty repository with uncommitted files.")
+	flags.version = flag.Bool("version", false, "Display version.")
 }
 
 func main() {
 	flag.Parse()
-	if *vers {
+	if *flags.version {
 		fmt.Printf("version %s\n", version.Version)
-		return
+		os.Exit(0)
 	}
-	if *dryRun {
+	if *flags.dryRun {
 		log.Println("Performing dry run.")
 	}
 	repo := getRepository("")
@@ -55,7 +57,7 @@ func main() {
 	 */
 	if len(status) != 1 {
 		msg := fmt.Sprintf("incorrrect file commit status, %d files, expecting only %s", len(status), dotVersionFile)
-		if *dirty {
+		if *flags.dirty {
 			log.Println(msg)
 		} else {
 			panic(fmt.Errorf(msg))
@@ -65,7 +67,7 @@ func main() {
 	vs := status.File(dotVersionFile)
 	if vs.Staging == '?' && vs.Worktree == '?' {
 		msg := fmt.Sprintf("%s should be only uncommitted file", dotVersionFile)
-		if *dirty {
+		if *flags.dirty {
 			log.Println(msg)
 		} else {
 			panic(fmt.Errorf(msg))
@@ -85,6 +87,10 @@ func main() {
 	 * Create the new version file.
 	 */
 	createVersionGo(output, tag)
+
+	if *flags.dryRun {
+		os.Exit(0)
+	}
 
 	/*
 	* Git add the .version and version files.
@@ -165,14 +171,16 @@ func newSignature() *object.Signature {
 }
 
 func createVersionGo(fileName string, tag string) {
+	licenseStr := ""
 	contents, err := ioutil.ReadFile(licenseFile)
-	checkIfError("reading licence", err)
-	licenseStr := strings.Replace(string(contents), "\n", "\n *", -1)
+	if err == nil {
+		licenseStr = "/*\n *" + strings.Replace(string(contents), "\n", "\n *", -1) + "\n */"
+	}
 
 	versionGo := strings.Replace(versionTemplateStr, "$LICENSE$", licenseStr, 1)
 	versionGo = strings.Replace(versionGo, "$TAG$", tag, 1)
 
-	if *dryRun {
+	if *flags.dryRun {
 		fmt.Println(versionGo)
 		return
 	}
@@ -250,12 +258,10 @@ func checkIfError(msg string, err error) {
 	panic(fmt.Errorf("%v: %v", msg, err))
 }
 
-const versionTemplateStr = `/*
- * $LICENSE$
- */
+const versionTemplateStr = `$LICENSE$
 
 package version
 
-// Version number for official releases updated with go generate.
-var Version = "$TAG$"
+// Version number for official releases. Updated with gorelease.
+const Version = "$TAG$"
 `
