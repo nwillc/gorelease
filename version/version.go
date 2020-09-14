@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2020,  nwillc@gmail.com
+ * Copyright (c) 2020,  nwillc@gmail.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,5 +17,5 @@
 
 package version
 
-// Version number for official releases updated with go generate.
-var Version = "v0.2.0"
+// Version number for official releases. Updated with gorelease.
+const Version = "v0.3.0"
