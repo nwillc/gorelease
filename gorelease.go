@@ -25,9 +25,9 @@ const (
 	gitUser        = "git"
 )
 
-var flags struct{
-	dryRun *bool
-	dirty *bool
+var flags struct {
+	dryRun  *bool
+	dirty   *bool
 	version *bool
 }
 
