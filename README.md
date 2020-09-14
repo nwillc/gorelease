@@ -10,7 +10,6 @@ A simple program to handle GitHub releases for Go repositories.
 
 ```bash
 go get github.com/nwillc/gorelease
-go install
 ```
 
 # Setup
@@ -19,13 +18,13 @@ Your repository should contain the following:
 
 ```text
 .version
-LICENSE.md
-version/version.go
+LICENSE.md (Optional)
+version/version.go (Configurable)
 ```
 
 ## Your Semantic Version
 
-The `.version` file should contain the semantic version you want to use, for example `0.1.0`.
+The `.version` file should contain the semantic version tag you want to use, for example `v0.1.0`.
 
 ## Your Code License
 

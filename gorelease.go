@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/blang/semver/v4"
+	"golang.org/x/mod/semver"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -80,10 +80,12 @@ func main() {
 	content, err := ioutil.ReadFile(dotVersionFile)
 	checkIfError("reading .version", err)
 	versionStr := strings.Replace(string(content), "\n", "", -1)
-	v, err := semver.Make(versionStr)
-	checkIfError("parsing version", err)
-	tag := "v" + v.String()
-
+	if !semver.IsValid(versionStr) {
+		msg := fmt.Sprintf("invalid version %s", versionStr)
+		log.Println(msg)
+		panic(fmt.Errorf(msg))
+	}
+	tag := semver.Canonical(versionStr)
 	/*
 	 * Create the new version file.
 	 */
