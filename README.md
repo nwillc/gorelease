@@ -38,10 +38,10 @@ This can be empty to start, `gorelease` will create a valid Go file basically co
 ```go
 package version
 
-var Version = "v0.1.0"
+const Version = "v0.1.0"
 ```
 
-This can be referenced in your Go.
+This can be referenced in your Go as `version.Version`.
 
 # Use
 
