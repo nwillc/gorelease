@@ -107,7 +107,7 @@ func main() {
 	/*
 	* Git commit the files.
 	 */
-	_, err = w.Commit("Generated for "+tag, &git.CommitOptions{
+	_, err = w.Commit("Updated for release "+tag, &git.CommitOptions{
 		Author: newSignature(),
 	})
 	checkIfError("committing files", err)
