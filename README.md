@@ -65,3 +65,7 @@ Usage of gorelease:
   -version
     	Display version.
 ```
+
+# TODO
+
+ - Make handling v2.0.0+ aware of Go's special requirements there.

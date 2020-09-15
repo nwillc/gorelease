@@ -8,6 +8,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
+	"github.com/nwillc/gorelease/config"
 	"github.com/nwillc/gorelease/gen/version"
 	"golang.org/x/mod/semver"
 	"io/ioutil"
@@ -19,34 +20,13 @@ import (
 	"time"
 )
 
-const (
-	dotVersionFile   = ".version"
-	licenseFile      = "LICENSE.md"
-	gitUser          = "git"
-	defaultVersionGo = "gen/version/version.go"
-)
-
-var flags struct {
-	dryRun  *bool
-	dirty   *bool
-	version *bool
-	output  *string
-}
-
-func init() {
-	flags.dryRun = flag.Bool("dryrun", false, "Perform a dry run, no files changed or tags/files pushed.")
-	flags.dirty = flag.Bool("dirty", false, "Allow dirty repository with uncommitted files.")
-	flags.version = flag.Bool("version", false, "Display version.")
-	flags.output = flag.String("output", defaultVersionGo, "Where to put the output version.go file")
-}
-
 func main() {
 	flag.Parse()
-	if *flags.version {
+	if *config.Flags.Version {
 		fmt.Printf("version %s\n", version.Version)
 		os.Exit(0)
 	}
-	if *flags.dryRun {
+	if *config.Flags.DryRun {
 		log.Println("Performing dry run.")
 	}
 	repo := getRepository("")
@@ -59,18 +39,18 @@ func main() {
 	 * Check that we are ready for release.
 	 */
 	if len(status) != 1 {
-		msg := fmt.Sprintf("incorrrect file commit status, %d files, expecting only %s", len(status), dotVersionFile)
-		if *flags.dirty {
+		msg := fmt.Sprintf("incorrrect file commit status, %d files, expecting only %s", len(status), config.DotVersionFile)
+		if *config.Flags.Dirty {
 			log.Println(msg)
 		} else {
 			panic(fmt.Errorf(msg))
 		}
 	}
 
-	vs := status.File(dotVersionFile)
+	vs := status.File(config.DotVersionFile)
 	if vs.Staging == '?' && vs.Worktree == '?' {
-		msg := fmt.Sprintf("%s should be only uncommitted file", dotVersionFile)
-		if *flags.dirty {
+		msg := fmt.Sprintf("%s should be only uncommitted file", config.DotVersionFile)
+		if *config.Flags.Dirty {
 			log.Println(msg)
 		} else {
 			panic(fmt.Errorf(msg))
@@ -79,7 +59,7 @@ func main() {
 	/*
 	 * Get new version.
 	 */
-	content, err := ioutil.ReadFile(dotVersionFile)
+	content, err := ioutil.ReadFile(config.DotVersionFile)
 	checkIfError("reading .version", err)
 	versionStr := strings.Replace(string(content), "\n", "", -1)
 	if !semver.IsValid(versionStr) {
@@ -91,20 +71,20 @@ func main() {
 	/*
 	 * Create the new version file.
 	 */
-	createVersionGo(*flags.output, tag)
+	createVersionGo(*config.Flags.Output, tag)
 
-	if *flags.dryRun {
+	if *config.Flags.DryRun {
 		os.Exit(0)
 	}
 
 	/*
 	* Git add the .version and version files.
 	 */
-	_, err = w.Add(*flags.output)
-	checkIfError(fmt.Sprintf("adding %s", *flags.output), err)
+	_, err = w.Add(*config.Flags.Output)
+	checkIfError(fmt.Sprintf("adding %s", *config.Flags.Output), err)
 
-	_, err = w.Add(dotVersionFile)
-	checkIfError(fmt.Sprintf("adding %s", dotVersionFile), err)
+	_, err = w.Add(config.DotVersionFile)
+	checkIfError(fmt.Sprintf("adding %s", config.DotVersionFile), err)
 
 	/*
 	* Git commit the files.
@@ -158,7 +138,7 @@ func publicKeys() (*ssh.PublicKeys, error) {
 	checkIfError("finding home directory", err)
 	path += "/.ssh/id_rsa"
 
-	publicKey, err := ssh.NewPublicKeysFromFile(gitUser, path, "")
+	publicKey, err := ssh.NewPublicKeysFromFile(config.GitUser, path, "")
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +157,7 @@ func newSignature() *object.Signature {
 
 func createVersionGo(fileName string, tag string) {
 	licenseStr := ""
-	contents, err := ioutil.ReadFile(licenseFile)
+	contents, err := ioutil.ReadFile(config.LicenseFile)
 	if err == nil {
 		licenseStr = "/*\n *" + strings.Replace(string(contents), "\n", "\n *", -1) + "\n */"
 	}
