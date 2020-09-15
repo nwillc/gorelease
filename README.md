@@ -48,13 +48,7 @@ If the push fails due to credential issues it will inform you how to do the push
 
 # Using the version in your code
 
-This program will generate a `gen/version/version.go` file containing:
-
-```go
-package version 
-const Version = "v0.1.0"
-```
-
+This program will generate a `gen/version/version.go` file like [the one in this repo](./gen/version/version.go).
 You can reference `version.Version` in your code to access the version tag of the current release.
 
 # Options
