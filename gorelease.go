@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2020,  nwillc@gmail.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ */
+
 package main
 
 import (
@@ -8,8 +25,8 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
-	"github.com/nwillc/gorelease/config"
 	"github.com/nwillc/gorelease/gen/version"
+	"github.com/nwillc/gorelease/setup"
 	"golang.org/x/mod/semver"
 	"io/ioutil"
 	"log"
@@ -22,11 +39,11 @@ import (
 
 func main() {
 	flag.Parse()
-	if *config.Flags.Version {
+	if *setup.Flags.Version {
 		fmt.Printf("version %s\n", version.Version)
 		os.Exit(0)
 	}
-	if *config.Flags.DryRun {
+	if *setup.Flags.DryRun {
 		log.Println("Performing dry run.")
 	}
 	repo := getRepository("")
@@ -39,18 +56,18 @@ func main() {
 	 * Check that we are ready for release.
 	 */
 	if len(status) != 1 {
-		msg := fmt.Sprintf("incorrrect file commit status, %d files, expecting only %s", len(status), config.DotVersionFile)
-		if *config.Flags.Dirty {
+		msg := fmt.Sprintf("incorrrect file commit status, %d files, expecting only %s", len(status), setup.DotVersionFile)
+		if *setup.Flags.Dirty {
 			log.Println(msg)
 		} else {
 			panic(fmt.Errorf(msg))
 		}
 	}
 
-	vs := status.File(config.DotVersionFile)
+	vs := status.File(setup.DotVersionFile)
 	if vs.Staging == '?' && vs.Worktree == '?' {
-		msg := fmt.Sprintf("%s should be only uncommitted file", config.DotVersionFile)
-		if *config.Flags.Dirty {
+		msg := fmt.Sprintf("%s should be only uncommitted file", setup.DotVersionFile)
+		if *setup.Flags.Dirty {
 			log.Println(msg)
 		} else {
 			panic(fmt.Errorf(msg))
@@ -59,7 +76,7 @@ func main() {
 	/*
 	 * Get new version.
 	 */
-	content, err := ioutil.ReadFile(config.DotVersionFile)
+	content, err := ioutil.ReadFile(setup.DotVersionFile)
 	checkIfError("reading .version", err)
 	versionStr := strings.Replace(string(content), "\n", "", -1)
 	if !semver.IsValid(versionStr) {
@@ -71,20 +88,20 @@ func main() {
 	/*
 	 * Create the new version file.
 	 */
-	createVersionGo(*config.Flags.Output, tag)
+	createVersionGo(*setup.Flags.Output, tag)
 
-	if *config.Flags.DryRun {
+	if *setup.Flags.DryRun {
 		os.Exit(0)
 	}
 
 	/*
 	* Git add the .version and version files.
 	 */
-	_, err = w.Add(*config.Flags.Output)
-	checkIfError(fmt.Sprintf("adding %s", *config.Flags.Output), err)
+	_, err = w.Add(*setup.Flags.Output)
+	checkIfError(fmt.Sprintf("adding %s", *setup.Flags.Output), err)
 
-	_, err = w.Add(config.DotVersionFile)
-	checkIfError(fmt.Sprintf("adding %s", config.DotVersionFile), err)
+	_, err = w.Add(setup.DotVersionFile)
+	checkIfError(fmt.Sprintf("adding %s", setup.DotVersionFile), err)
 
 	/*
 	* Git commit the files.
@@ -138,7 +155,7 @@ func publicKeys() (*ssh.PublicKeys, error) {
 	checkIfError("finding home directory", err)
 	path += "/.ssh/id_rsa"
 
-	publicKey, err := ssh.NewPublicKeysFromFile(config.GitUser, path, "")
+	publicKey, err := ssh.NewPublicKeysFromFile(setup.GitUser, path, "")
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +174,7 @@ func newSignature() *object.Signature {
 
 func createVersionGo(fileName string, tag string) {
 	licenseStr := ""
-	contents, err := ioutil.ReadFile(config.LicenseFile)
+	contents, err := ioutil.ReadFile(setup.LicenseFile)
 	if err == nil {
 		licenseStr = "/*\n *" + strings.Replace(string(contents), "\n", "\n *", -1) + "\n */"
 	}
