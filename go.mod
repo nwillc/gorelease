@@ -7,6 +7,6 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
 	golang.org/x/mod v0.3.0
-	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
-	golang.org/x/sys v0.0.0-20200915084602-288bc346aa39 // indirect
+	golang.org/x/net v0.0.0-20200923182212-328152dc79b1 // indirect
+	golang.org/x/sys v0.0.0-20200923182605-d9f96fdee20d // indirect
 )

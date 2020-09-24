@@ -29,7 +29,7 @@ var Flags struct {
 }
 
 func init() {
-	Flags.DryRun = flag.Bool("dryrun", false, "Perform a dry run, no files changed or tags/files pushed.")
+	Flags.DryRun = flag.Bool("dry-run", false, "Perform a dry run, no files changed or tags/files pushed.")
 	Flags.Dirty = flag.Bool("dirty", false, "Allow Dirty repository with uncommitted files.")
 	Flags.Version = flag.Bool("version", false, "Display version.")
 	Flags.Output = flag.String("output", DefaultVersionGo, "Where to put the output version.go file")

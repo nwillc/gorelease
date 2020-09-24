@@ -58,7 +58,7 @@ You can reference `version.Version` in your code to access the version tag of th
 Usage of gorelease:
   -dirty
     	Allow dirty repository with uncommitted files.
-  -dryrun
+  -dry-run
     	Perform a dry run, no files changed or tags/files pushed.
   -output string
     	Where to put the output version.go file (default "gen/version/version.go")
@@ -66,6 +66,3 @@ Usage of gorelease:
     	Display version.
 ```
 
-# TODO
-
- - Make handling v2.0.0+ aware of Go's special requirements there.

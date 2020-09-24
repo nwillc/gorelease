@@ -27,6 +27,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
 	"github.com/nwillc/gorelease/gen/version"
 	"github.com/nwillc/gorelease/setup"
+	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/semver"
 	"io/ioutil"
 	"log"
@@ -37,11 +38,13 @@ import (
 	"time"
 )
 
+const v2 = "v2.0.0"
+
 func main() {
 	flag.Parse()
 	if *setup.Flags.Version {
 		fmt.Printf("version %s\n", version.Version)
-		os.Exit(0)
+		os.Exit(setup.NORMAL_EXIT)
 	}
 	if *setup.Flags.DryRun {
 		log.Println("Performing dry run.")
@@ -85,13 +88,26 @@ func main() {
 		panic(fmt.Errorf(msg))
 	}
 	tag := semver.Canonical(versionStr)
+
+	if semver.Compare(tag, v2) >= 0 {
+		log.Printf("Warning %s >= %s", tag, v2)
+		content, err := ioutil.ReadFile(setup.ModuleFile)
+		checkIfError("unable to read go.mod", err)
+		modFile, err := modfile.Parse(setup.ModuleFile, content, nil)
+		checkIfError("unable to parse go.mod", err)
+		if !strings.HasSuffix(modFile.Module.Mod.Path, semver.Major(tag)) {
+			log.Printf("Major version specified (%s) not found at end of go.mod module %s", semver.Major(tag), modFile.Module.Mod.Path)
+			os.Exit(setup.VERSION_CONFLICT)
+		}
+	}
+
 	/*
 	 * Create the new version file.
 	 */
 	createVersionGo(*setup.Flags.Output, tag)
 
 	if *setup.Flags.DryRun {
-		os.Exit(0)
+		os.Exit(setup.NORMAL_EXIT)
 	}
 
 	/*

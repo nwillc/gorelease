@@ -18,9 +18,6 @@
 package setup
 
 const (
-	DefaultVersionGo = "gen/version/version.go"
-	DotVersionFile   = ".version"
-	GitUser          = "git"
-	LicenseFile      = "LICENSE.md"
-	ModuleFile       = "go.mod"
+	NORMAL_EXIT = iota
+	VERSION_CONFLICT
 )
