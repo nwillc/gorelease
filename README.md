@@ -28,7 +28,8 @@ The `.version` file should contain the semantic version tag you want to use, for
 
 ## Your Code License
 
-This file is optional, if present the text in this file will be used as a comment for the `version.go` files generated.
+This file (`LICENSE.md` or `LICENSE`) is optional, if present the text it contains will be used as a comment in 
+the `version.go` files generated.
 
 # Use
 
