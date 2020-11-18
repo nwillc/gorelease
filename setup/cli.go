@@ -21,7 +21,8 @@ import (
 	"flag"
 )
 
-var Flags struct {
+//Flags used on the command line.
+var Flags  struct {
 	DryRun  *bool
 	Dirty   *bool
 	Version *bool

@@ -17,7 +17,8 @@
 
 package setup
 
+// Program exit codes.
 const (
-	NORMAL_EXIT = iota
-	VERSION_CONFLICT
+	NormalExit = iota
+	VersionConflict
 )
