@@ -26,6 +26,7 @@ import (
 	"time"
 )
 
+// PublicKeys returns current users public keys.
 func PublicKeys() (*ssh.PublicKeys, error) {
 	path, err := os.UserHomeDir()
 	CheckIfError("finding home directory", err)
@@ -38,6 +39,7 @@ func PublicKeys() (*ssh.PublicKeys, error) {
 	return publicKey, nil
 }
 
+// NewSignature create a minimal object.Signature for the current user.
 func NewSignature() *object.Signature {
 	userInfo, err := user.Current()
 	CheckIfError("getting current user", err)

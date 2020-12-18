@@ -48,6 +48,7 @@ func TagExists(r *git.Repository, tag string) bool {
 	return res
 }
 
+// GetRepository returns a git.Repository from a path, with an empty string treated as ".".
 func GetRepository(repo string) *git.Repository {
 	if repo == "" {
 		repo = "."

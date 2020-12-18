@@ -19,6 +19,7 @@ package utils
 
 import "fmt"
 
+// CheckIfError on an error panic with a formatted message.
 func CheckIfError(msg string, err error) {
 	if err == nil {
 		return
