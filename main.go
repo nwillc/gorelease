@@ -52,7 +52,9 @@ func main() {
 	utils.CheckIfError("repository access", err)
 
 	// Check that we are ready for release.
-	repoReady(w)
+	if err := repoReady(w); err != nil {
+		panic(err)
+	}
 
 	// Get new version.
 	tag := getNewVersion()
@@ -149,16 +151,16 @@ func getNewVersion() string {
 	return tag
 }
 
-func repoReady(w *git.Worktree) {
+func repoReady(w *git.Worktree) error {
 	status, err := w.Status()
 	utils.CheckIfError("repository status", err)
 
 	if len(status) != 1 {
 		msg := fmt.Sprintf("incorrrect file commit status, %d files, expecting only %s", len(status), setup.DotVersionFile)
 		if *setup.Flags.Dirty {
-			log.Println(msg)
+			log.Println("dirty override: ", msg)
 		} else {
-			panic(fmt.Errorf(msg))
+			return fmt.Errorf(msg)
 		}
 	}
 
@@ -166,11 +168,12 @@ func repoReady(w *git.Worktree) {
 	if vs.Staging == '?' && vs.Worktree == '?' {
 		msg := fmt.Sprintf("%s should be only uncommitted file", setup.DotVersionFile)
 		if *setup.Flags.Dirty {
-			log.Println(msg)
+			log.Println("dirty override: ", msg)
 		} else {
-			panic(fmt.Errorf(msg))
+			return fmt.Errorf(msg)
 		}
 	}
+	return nil
 }
 
 func createVersionGo(fileName string, tag string) {
