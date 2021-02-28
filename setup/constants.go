@@ -17,14 +17,19 @@
 
 package setup
 
-import _ "embed"
+import _ "embed" // Required for the embed below.
 
 const (
-	DefaultVersionGo   = "gen/version/version.go"
-	DotVersionFile     = ".version"
-	GitUser            = "git"
-	LicenseFiles       = "LICENSE.md LICENSE"
-	ModuleFile         = "go.mod"
+	// DefaultVersionGo default filename to use for generate file.
+	DefaultVersionGo = "gen/version/version.go"
+	// DotVersionFile file name to look for the version in.
+	DotVersionFile = ".version"
+	// GitUser git user.
+	GitUser = "git"
+	// LicenseFiles names.
+	LicenseFiles = "LICENSE.md LICENSE"
+	// ModuleFile file name.
+	ModuleFile = "go.mod"
 )
 
 //go:embed version.txt
