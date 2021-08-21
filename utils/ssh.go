@@ -18,12 +18,13 @@
 package utils
 
 import (
-	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
-	"github.com/nwillc/gorelease/setup"
 	"os"
 	"os/user"
 	"time"
+
+	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
+	"github.com/nwillc/gorelease/setup"
 )
 
 // PublicKeys returns current users public keys.

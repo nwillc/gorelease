@@ -20,6 +20,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
 	"github.com/nwillc/gorelease/gen/version"
@@ -27,11 +33,6 @@ import (
 	"github.com/nwillc/gorelease/utils"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/semver"
-	"io/ioutil"
-	"log"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 const v2 = "v2.0.0"
