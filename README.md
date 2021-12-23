@@ -10,7 +10,7 @@ A simple program to handle GitHub releases for Go repositories.
 # Get
 
 ```bash
-go get github.com/nwillc/gorelease
+go install github.com/nwillc/gorelease@latest
 ```
 
 # Setup
