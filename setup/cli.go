@@ -34,6 +34,6 @@ func init() {
 	Flags.Dirty = flag.Bool("dirty", false, "Allow Dirty repository with uncommitted files.")
 	Flags.DryRun = flag.Bool("dry-run", false, "Perform a dry run, no files changed or tags/files pushed.")
 	Flags.Output = flag.String("output", DefaultVersionGo, "Where to put the output version.go file")
-	Flags.Verbose = flag.Bool("v", false, "Verbose mode, more info on errors")
+	Flags.Verbose = flag.Bool("verbose", false, "Verbose mode, more info on some errors")
 	Flags.Version = flag.Bool("version", false, "Display version.")
 }
