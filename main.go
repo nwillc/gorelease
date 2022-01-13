@@ -106,6 +106,9 @@ func main() {
 			Auth:       sshKey,
 		})
 		if err != nil {
+			if *setup.Flags.Verbose {
+				log.Println(err)
+			}
 			log.Printf("Push failed, please: git push origin %s; git push", tag)
 		}
 	}
