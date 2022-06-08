@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020,  nwillc@gmail.com
+ * Copyright (c) 2022,  nwillc@gmail.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,6 +18,7 @@
 package utils
 
 import (
+	"github.com/nwillc/genfuncs"
 	"os"
 	"os/user"
 	"time"
@@ -28,16 +29,16 @@ import (
 )
 
 // PublicKeys returns current users public keys.
-func PublicKeys() (*ssh.PublicKeys, error) {
+func PublicKeys() *genfuncs.Result[*ssh.PublicKeys] {
 	path, err := os.UserHomeDir()
 	CheckIfError("finding home directory", err)
 	path += "/.ssh/id_rsa"
 
 	publicKey, err := ssh.NewPublicKeysFromFile(setup.GitUser, path, "")
 	if err != nil {
-		return nil, err
+		return genfuncs.NewError[*ssh.PublicKeys](err)
 	}
-	return publicKey, nil
+	return genfuncs.NewResult(publicKey)
 }
 
 // NewSignature create a minimal object.Signature for the current user.

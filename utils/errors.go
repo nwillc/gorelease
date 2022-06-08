@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020,  nwillc@gmail.com
+ * Copyright (c) 2022,  nwillc@gmail.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,5 +25,5 @@ func CheckIfError(msg string, err error) {
 		return
 	}
 
-	panic(fmt.Errorf("%v: %v", msg, err))
+	panic(fmt.Errorf("%s: %w", msg, err))
 }

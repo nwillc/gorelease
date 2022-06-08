@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020,  nwillc@gmail.com
+ * Copyright (c) 2022,  nwillc@gmail.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -90,7 +90,7 @@ func main() {
 		panic(fmt.Errorf("unable to set tag %s", tag))
 	}
 
-	sshKey, _ := utils.PublicKeys()
+	sshKey := utils.PublicKeys()
 
 	/*
 	 * Git push the tag
@@ -99,11 +99,11 @@ func main() {
 		RemoteName: "origin",
 		RefSpecs:   []config.RefSpec{"refs/tags/*:refs/tags/*"},
 	})
-	if err != nil && sshKey != nil {
+	if err != nil && sshKey.Ok() {
 		err = repo.Push(&git.PushOptions{
 			RemoteName: "origin",
 			RefSpecs:   []config.RefSpec{"refs/tags/*:refs/tags/*"},
-			Auth:       sshKey,
+			Auth:       sshKey.ValueOrPanic(),
 		})
 		if err != nil {
 			if *setup.Flags.Verbose {
@@ -117,8 +117,8 @@ func main() {
 	 * Push the entire repo
 	 */
 	err = repo.Push(&git.PushOptions{})
-	if err != nil {
-		_ = repo.Push(&git.PushOptions{Auth: sshKey})
+	if err != nil && sshKey.Ok() {
+		_ = repo.Push(&git.PushOptions{Auth: sshKey.ValueOrPanic()})
 	}
 }
 
