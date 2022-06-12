@@ -34,19 +34,14 @@ func PublicKeys() *genfuncs.Result[*ssh.PublicKeys] {
 	CheckIfError("finding home directory", err)
 	path += "/.ssh/id_rsa"
 
-	publicKey, err := ssh.NewPublicKeysFromFile(setup.GitUser, path, "")
-	if err != nil {
-		return genfuncs.NewError[*ssh.PublicKeys](err)
-	}
-	return genfuncs.NewResult(publicKey)
+	return genfuncs.NewResultFromTuple(ssh.NewPublicKeysFromFile(setup.GitUser, path, ""))
 }
 
 // NewSignature create a minimal object.Signature for the current user.
 func NewSignature() *object.Signature {
-	userInfo, err := user.Current()
-	CheckIfError("getting current user", err)
+	r := genfuncs.NewResultFromTuple(user.Current())
 	sig := object.Signature{
-		Name: userInfo.Name,
+		Name: r.MustGet().Name,
 		When: time.Now(),
 	}
 	return &sig

@@ -103,7 +103,7 @@ func main() {
 		err = repo.Push(&git.PushOptions{
 			RemoteName: "origin",
 			RefSpecs:   []config.RefSpec{"refs/tags/*:refs/tags/*"},
-			Auth:       sshKey.ValueOrPanic(),
+			Auth:       sshKey.MustGet(),
 		})
 		if err != nil {
 			if *setup.Flags.Verbose {
@@ -118,7 +118,7 @@ func main() {
 	 */
 	err = repo.Push(&git.PushOptions{})
 	if err != nil && sshKey.Ok() {
-		_ = repo.Push(&git.PushOptions{Auth: sshKey.ValueOrPanic()})
+		_ = repo.Push(&git.PushOptions{Auth: sshKey.MustGet()})
 	}
 }
 

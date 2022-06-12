@@ -19,6 +19,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/nwillc/genfuncs"
 	"log"
 	"strings"
 
@@ -54,9 +55,6 @@ func GetRepository(repo string) *git.Repository {
 	if repo == "" {
 		repo = "."
 	}
-	r, err := git.PlainOpenWithOptions(repo, &git.PlainOpenOptions{DetectDotGit: true})
-	if err != nil {
-		panic(err)
-	}
-	return r
+	r := genfuncs.NewResultFromTuple(git.PlainOpenWithOptions(repo, &git.PlainOpenOptions{DetectDotGit: true}))
+	return r.MustGet()
 }
