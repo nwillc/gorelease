@@ -20,6 +20,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/nwillc/genfuncs"
 	"io/ioutil"
 	"log"
 	"os"
@@ -83,12 +84,15 @@ func main() {
 	/*
 	* Git create new tag.
 	 */
-	ok, err := setTag(repo, tag)
-	utils.CheckIfError("setting tag", err)
-
-	if !ok {
-		panic(fmt.Errorf("unable to set tag %s", tag))
-	}
+	setTag(repo, tag).
+		OnFailure(func(e error) {
+			utils.CheckIfError("setting tag", e)
+		}).
+		OnSuccess(func(ok bool) {
+			if !ok {
+				panic(fmt.Errorf("unable to set tag %s", tag))
+			}
+		})
 
 	sshKey := utils.PublicKeys()
 
@@ -215,16 +219,16 @@ func createVersionGo(fileName string, tag string) {
 	utils.CheckIfError("writing version.go", err)
 }
 
-func setTag(r *git.Repository, tag string) (bool, error) {
+func setTag(r *git.Repository, tag string) *genfuncs.Result[bool] {
 	if utils.TagExists(r, tag) {
 		log.Printf("tag %s already exists", tag)
-		return false, nil
+		return genfuncs.NewResult(false)
 	}
 	log.Println("Set tag ", tag)
 	h, err := r.Head()
 	if err != nil {
 		log.Println("get HEAD error:", err)
-		return false, err
+		return genfuncs.NewError[bool](err)
 	}
 	_, err = r.CreateTag(tag, h.Hash(), &git.CreateTagOptions{
 		Tagger:  utils.NewSignature(),
@@ -233,8 +237,8 @@ func setTag(r *git.Repository, tag string) (bool, error) {
 
 	if err != nil {
 		log.Println("create tag error:", err)
-		return false, err
+		return genfuncs.NewError[bool](err)
 	}
 
-	return true, nil
+	return genfuncs.NewResult(true)
 }

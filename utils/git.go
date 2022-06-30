@@ -55,6 +55,6 @@ func GetRepository(repo string) *git.Repository {
 	if repo == "" {
 		repo = "."
 	}
-	r := genfuncs.NewResultFromTuple(git.PlainOpenWithOptions(repo, &git.PlainOpenOptions{DetectDotGit: true}))
+	r := genfuncs.NewResultError(git.PlainOpenWithOptions(repo, &git.PlainOpenOptions{DetectDotGit: true}))
 	return r.MustGet()
 }
