@@ -85,7 +85,7 @@ func main() {
 	* Git create new tag.
 	 */
 	setTag(repo, tag).
-		OnFailure(func(e error) {
+		OnError(func(e error) {
 			utils.CheckIfError("setting tag", e)
 		}).
 		OnSuccess(func(ok bool) {
