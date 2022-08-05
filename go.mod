@@ -1,6 +1,6 @@
 module github.com/nwillc/gorelease
 
-go 1.18
+go 1.19
 
 require (
 	github.com/Microsoft/go-winio v0.5.2 // indirect
@@ -11,12 +11,12 @@ require (
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3
-	golang.org/x/net v0.0.0-20220802222814-0bcc04d9c69b // indirect
-	golang.org/x/sys v0.0.0-20220731174439-a90be440212d // indirect
+	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48 // indirect
+	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 )
 
-require github.com/nwillc/genfuncs v0.19.4
+require github.com/nwillc/genfuncs v0.20.0
 
 require (
 	github.com/acomagu/bufpipe v1.0.3 // indirect
